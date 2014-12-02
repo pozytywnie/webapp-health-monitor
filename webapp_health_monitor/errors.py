@@ -4,3 +4,7 @@ class BadConfigurationError(Exception):
 
 class VerificationError(Exception):
     pass
+
+
+class BackendError(Exception):
+    pass
