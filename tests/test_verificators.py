@@ -6,7 +6,7 @@ except ImportError:
     import mock
 
 from webapp_health_monitor import errors
-from webapp_health_monitor.verificators import RangeVerificator
+from webapp_health_monitor.verificators.base import RangeVerificator
 
 
 class RangeVerificatorTest(TestCase):
