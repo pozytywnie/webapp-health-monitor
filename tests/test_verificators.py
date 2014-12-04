@@ -7,6 +7,9 @@ except ImportError:
 
 from webapp_health_monitor import errors
 from webapp_health_monitor.verificators.base import RangeVerificator
+from webapp_health_monitor.verificators.system import FreeDiskSpaceVerificator
+from webapp_health_monitor.verificators.system import (
+    PercentUsedDiskSpaceVerificator)
 
 
 class RangeVerificatorTest(TestCase):
@@ -63,3 +66,29 @@ class RangeVerificatorTest(TestCase):
         verificator.value_extractor = mock.Mock(
             extract=mock.Mock(return_value=1))
         self.assertEqual(1, verificator._get_value())
+
+
+class FreeDiskSpaceVerificatorTest(TestCase):
+    @mock.patch('webapp_health_monitor.verificators.system.'
+                'FreeDiskSpaceExtractor')
+    def test_using_value_extractor(self, FreeDiskSpaceExtractor):
+        class AppVerificator(FreeDiskSpaceVerificator):
+            mount_point = '/home'
+        logger = mock.Mock()
+        verificator = AppVerificator(logger)
+        FreeDiskSpaceExtractor.return_value.extract.return_value = 100
+        self.assertEqual(100, verificator._get_value())
+        FreeDiskSpaceExtractor.assert_called_with('/home')
+
+
+class PercentUsedDiskSpaceVerificatorTest(TestCase):
+    @mock.patch('webapp_health_monitor.verificators.system.'
+                'PercentUsedDiskSpaceExtractor')
+    def test_using_value_extractor(self, PercentUsedDiskSpaceExtractor):
+        class AppVerificator(PercentUsedDiskSpaceVerificator):
+            mount_point = '/home'
+        logger = mock.Mock()
+        verificator = AppVerificator(logger)
+        PercentUsedDiskSpaceExtractor.return_value.extract.return_value = 100
+        self.assertEqual(100, verificator._get_value())
+        PercentUsedDiskSpaceExtractor.assert_called_with('/home')
