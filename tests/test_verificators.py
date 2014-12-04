@@ -34,25 +34,32 @@ class RangeVerificatorTest(TestCase):
     def test_value_below_lower_bound_raises_verification_error(self):
         logger = mock.Mock()
         verificator = RangeVerificator(logger)
-        verificator.value_extractor = mock.Mock(
-            extract=mock.Mock(return_value=99))
+        verificator._get_value = mock.Mock(return_value=99)
+        verificator.value_extractor = mock.Mock()
         verificator.lower_bound = 100
         self.assertRaises(errors.VerificationError, verificator.run)
 
     def test_value_over_upper_bound_raises_verification_error(self):
         logger = mock.Mock()
         verificator = RangeVerificator(logger)
-        verificator.value_extractor = mock.Mock(
-            extract=mock.Mock(return_value=100))
+        verificator._get_value = mock.Mock(return_value=100)
+        verificator.value_extractor = mock.Mock()
         verificator.upper_bound = 99
         self.assertRaises(errors.VerificationError, verificator.run)
 
     def test_check_logging(self):
         logger = mock.Mock()
         verificator = RangeVerificator(logger)
-        verificator.value_extractor = mock.Mock(
-            extract=mock.Mock(return_value=1))
+        verificator._get_value = mock.Mock(return_value=1)
+        verificator.value_extractor = mock.Mock()
         verificator.lower_bound = 0
         verificator.upper_bound = 2
         verificator.run()
         logger.check_range.assert_called_with(0, 1, 2)
+
+    def test_get_value(self):
+        logger = mock.Mock()
+        verificator = RangeVerificator(logger)
+        verificator.value_extractor = mock.Mock(
+            extract=mock.Mock(return_value=1))
+        self.assertEqual(1, verificator._get_value())
