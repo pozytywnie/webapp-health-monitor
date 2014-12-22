@@ -6,7 +6,10 @@ except ImportError:
     import mock
 
 from webapp_health_monitor import errors
-from webapp_health_monitor.verificators import RangeVerificator
+from webapp_health_monitor.verificators.base import RangeVerificator
+from webapp_health_monitor.verificators.system import FreeDiskSpaceVerificator
+from webapp_health_monitor.verificators.system import (
+    PercentUsedDiskSpaceVerificator)
 
 
 class RangeVerificatorTest(TestCase):
@@ -34,25 +37,58 @@ class RangeVerificatorTest(TestCase):
     def test_value_below_lower_bound_raises_verification_error(self):
         logger = mock.Mock()
         verificator = RangeVerificator(logger)
-        verificator.value_extractor = mock.Mock(
-            extract=mock.Mock(return_value=99))
+        verificator._get_value = mock.Mock(return_value=99)
+        verificator.value_extractor = mock.Mock()
         verificator.lower_bound = 100
         self.assertRaises(errors.VerificationError, verificator.run)
 
     def test_value_over_upper_bound_raises_verification_error(self):
         logger = mock.Mock()
         verificator = RangeVerificator(logger)
-        verificator.value_extractor = mock.Mock(
-            extract=mock.Mock(return_value=100))
+        verificator._get_value = mock.Mock(return_value=100)
+        verificator.value_extractor = mock.Mock()
         verificator.upper_bound = 99
         self.assertRaises(errors.VerificationError, verificator.run)
 
     def test_check_logging(self):
         logger = mock.Mock()
         verificator = RangeVerificator(logger)
-        verificator.value_extractor = mock.Mock(
-            extract=mock.Mock(return_value=1))
+        verificator._get_value = mock.Mock(return_value=1)
+        verificator.value_extractor = mock.Mock()
         verificator.lower_bound = 0
         verificator.upper_bound = 2
         verificator.run()
         logger.check_range.assert_called_with(0, 1, 2)
+
+    def test_get_value(self):
+        logger = mock.Mock()
+        verificator = RangeVerificator(logger)
+        verificator.value_extractor = mock.Mock(
+            extract=mock.Mock(return_value=1))
+        self.assertEqual(1, verificator._get_value())
+
+
+class FreeDiskSpaceVerificatorTest(TestCase):
+    @mock.patch('webapp_health_monitor.verificators.system.'
+                'FreeDiskSpaceExtractor')
+    def test_using_value_extractor(self, FreeDiskSpaceExtractor):
+        class AppVerificator(FreeDiskSpaceVerificator):
+            mount_point = '/home'
+        logger = mock.Mock()
+        verificator = AppVerificator(logger)
+        FreeDiskSpaceExtractor.return_value.extract.return_value = 100
+        self.assertEqual(100, verificator._get_value())
+        FreeDiskSpaceExtractor.assert_called_with('/home')
+
+
+class PercentUsedDiskSpaceVerificatorTest(TestCase):
+    @mock.patch('webapp_health_monitor.verificators.system.'
+                'PercentUsedDiskSpaceExtractor')
+    def test_using_value_extractor(self, PercentUsedDiskSpaceExtractor):
+        class AppVerificator(PercentUsedDiskSpaceVerificator):
+            mount_point = '/home'
+        logger = mock.Mock()
+        verificator = AppVerificator(logger)
+        PercentUsedDiskSpaceExtractor.return_value.extract.return_value = 100
+        self.assertEqual(100, verificator._get_value())
+        PercentUsedDiskSpaceExtractor.assert_called_with('/home')

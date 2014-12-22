@@ -24,8 +24,7 @@ class RangeVerificator(Verificator):
 
     def run(self):
         self._check_configuration()
-        value = self.value_extractor.extract()
-        self._check_value(value)
+        self._check_value()
 
     def _check_configuration(self):
         if self.value_extractor is None or not self._are_bounds_configured():
@@ -39,10 +38,14 @@ class RangeVerificator(Verificator):
         else:
             return True
 
-    def _check_value(self, value):
+    def _check_value(self):
+        value = self._get_value()
         self.logger.check_range(self.lower_bound, value, self.upper_bound)
         self._check_lower_bound(value)
         self._check_upper_bound(value)
+
+    def _get_value(self):
+        return self.value_extractor.extract()
 
     def _check_lower_bound(self, value):
         if self.lower_bound is not None:
