@@ -1,1 +1,2 @@
 coveralls
+mock==1.0.1
