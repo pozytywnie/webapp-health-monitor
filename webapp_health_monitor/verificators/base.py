@@ -4,8 +4,8 @@ from webapp_health_monitor import errors
 class Verificator(object):
     verificator_name = None
 
-    def __init__(self, logger):
-        self.logger = logger
+    def __init__(self, **kwargs):
+        pass
 
     def run(self):
         raise NotImplementedError()
@@ -40,7 +40,6 @@ class RangeVerificator(Verificator):
 
     def _check_value(self):
         value = self._get_value()
-        self.logger.check_range(self.lower_bound, value, self.upper_bound)
         self._check_lower_bound(value)
         self._check_upper_bound(value)
 
