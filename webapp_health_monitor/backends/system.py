@@ -28,6 +28,7 @@ class FileSystemBackend(object):
         for report in self._get_mount_points_reports():
             if report.mount_point == self.mount_point:
                 return getattr(report, attribute)
+        raise MountPointNotFound(self.mount_point)
 
     def _get_mount_points_reports(self):
         output = self._get_df_result()
@@ -82,3 +83,9 @@ class DiskVolume(object):
 
     def __str__(self):
         return '{} kB'.format(self._kilobytes)
+
+
+class MountPointNotFound(errors.VerificationError):
+    def __init__(self, mount_point):
+        super(MountPointNotFound, self).__init__(
+            'Mount point {}, not found'.format(mount_point))
