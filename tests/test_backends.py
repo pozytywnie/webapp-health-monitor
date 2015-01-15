@@ -10,6 +10,7 @@ except ImportError:
 
 
 from webapp_health_monitor.backends.system import DiskVolume
+from webapp_health_monitor.backends.system import MountPointNotFound
 from webapp_health_monitor.backends.system import FileSystemBackend
 from webapp_health_monitor import errors
 
@@ -103,3 +104,10 @@ class FileSystemBackendTest(TestCase):
         check_output.side_effect = side_effect
         self.assertRaises(errors.BackendError,
                           FileSystemBackend('/')._get_df_result)
+
+    def test_raise_mout_point_not_found(self):
+        backend = FileSystemBackend('/')
+        backend._get_mount_points_reports = mock.Mock(
+            return_value=mock.MagicMock())
+        self.assertRaises(MountPointNotFound,
+                          backend._get_mount_point_attribute, mock.Mock())
