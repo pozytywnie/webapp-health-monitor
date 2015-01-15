@@ -2,7 +2,7 @@ class BadConfigurationError(Exception):
     pass
 
 
-class VerificationError(Exception):
+class VerificationFailure(Exception):
     pass
 
 
