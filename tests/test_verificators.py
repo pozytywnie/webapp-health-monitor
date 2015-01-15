@@ -6,10 +6,26 @@ except ImportError:
     import mock
 
 from webapp_health_monitor import errors
+from webapp_health_monitor.verificators import _registered_verificators_classes
 from webapp_health_monitor.verificators.base import RangeVerificator
+from webapp_health_monitor.verificators import get_verificators
+from webapp_health_monitor.verificators import register
 from webapp_health_monitor.verificators.system import FreeDiskSpaceVerificator
 from webapp_health_monitor.verificators.system import (
     PercentUsedDiskSpaceVerificator)
+
+
+class RegisterTest(TestCase):
+    def test_register(self):
+        verificator_class = mock.Mock()
+        register(verificator_class)
+        self.assertIn(verificator_class, _registered_verificators_classes)
+
+    def test_get_verificators(self):
+        verificator_class = mock.Mock()
+        register(verificator_class)
+        self.assertIn(verificator_class.return_value,
+                      get_verificators())
 
 
 class RangeVerificatorTest(TestCase):
