@@ -1,6 +1,4 @@
-from webapp_health_monitor.value_extractors import FreeDiskSpaceExtractor
-from webapp_health_monitor.value_extractors import (
-    PercentUsedDiskSpaceExtractor)
+from webapp_health_monitor.backends.system import FileSystemBackend
 from webapp_health_monitor.verificators.base import RangeVerificator
 
 
@@ -9,7 +7,10 @@ class FreeDiskSpaceVerificator(RangeVerificator):
 
     def __init__(self, *args, **kwargs):
         super(FreeDiskSpaceVerificator, self).__init__(*args, **kwargs)
-        self.value_extractor = FreeDiskSpaceExtractor(self.mount_point)
+        self.backend = FileSystemBackend(self.mount_point)
+
+    def _get_value(self):
+        return self.backend.free_space
 
 
 class PercentUsedDiskSpaceVerificator(RangeVerificator):
@@ -17,4 +18,7 @@ class PercentUsedDiskSpaceVerificator(RangeVerificator):
 
     def __init__(self, *args, **kwargs):
         super(PercentUsedDiskSpaceVerificator, self).__init__(*args, **kwargs)
-        self.value_extractor = PercentUsedDiskSpaceExtractor(self.mount_point)
+        self.backend = FileSystemBackend(self.mount_point)
+
+    def _get_value(self):
+        return self.backend.percent_used
