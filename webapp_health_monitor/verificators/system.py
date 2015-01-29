@@ -9,7 +9,7 @@ class FreeDiskSpaceVerificator(RangeVerificator):
         super(FreeDiskSpaceVerificator, self).__init__(*args, **kwargs)
         self.backend = FileSystemBackend(self.mount_point)
 
-    def _get_value(self):
+    def get_value(self):
         return self.backend.free_space
 
 
@@ -20,5 +20,5 @@ class PercentUsedDiskSpaceVerificator(RangeVerificator):
         super(PercentUsedDiskSpaceVerificator, self).__init__(*args, **kwargs)
         self.backend = FileSystemBackend(self.mount_point)
 
-    def _get_value(self):
+    def get_value(self):
         return self.backend.percent_used

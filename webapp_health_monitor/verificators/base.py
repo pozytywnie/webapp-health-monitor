@@ -39,11 +39,11 @@ class RangeVerificator(Verificator):
             return True
 
     def _check_value(self):
-        value = self._get_value()
+        value = self.get_value()
         self._check_lower_bound(value)
         self._check_upper_bound(value)
 
-    def _get_value(self):
+    def get_value(self):
         raise NotImplementedError
 
     def _check_lower_bound(self, value):

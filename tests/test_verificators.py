@@ -25,24 +25,23 @@ class RangeVerificatorTest(TestCase):
 
     def test_value_below_lower_bound_raises_verification_error(self):
         verificator = RangeVerificator()
-        verificator._get_value = mock.Mock(return_value=99)
+        verificator.get_value = mock.Mock(return_value=99)
         verificator.lower_bound = 100
         self.assertRaises(errors.VerificationFailure, verificator.run)
 
     def test_value_over_upper_bound_raises_verification_error(self):
         verificator = RangeVerificator()
-        verificator._get_value = mock.Mock(return_value=100)
+        verificator.get_value = mock.Mock(return_value=100)
         verificator.upper_bound = 99
         self.assertRaises(errors.VerificationFailure, verificator.run)
 
     def test_run(self):
         verificator = RangeVerificator()
-        verificator._get_value = mock.Mock(return_value=1)
+        verificator.get_value = mock.Mock(return_value=1)
         verificator.lower_bound = 0
         verificator.upper_bound = 2
         verificator.run()
-        self.assertTrue(verificator._get_value.called)
-
+        self.assertTrue(verificator.get_value.called)
 
 
 class FreeDiskSpaceVerificatorTest(TestCase):
@@ -53,7 +52,7 @@ class FreeDiskSpaceVerificatorTest(TestCase):
             mount_point = '/home'
         verificator = AppVerificator()
         FileSystemBackend.return_value.free_space = 100
-        self.assertEqual(100, verificator._get_value())
+        self.assertEqual(100, verificator.get_value())
         FileSystemBackend.assert_called_with('/home')
 
 
@@ -65,5 +64,5 @@ class PercentUsedDiskSpaceVerificatorTest(TestCase):
             mount_point = '/home'
         verificator = AppVerificator()
         FileSystemBackend.return_value.percent_used = 100
-        self.assertEqual(100, verificator._get_value())
+        self.assertEqual(100, verificator.get_value())
         FileSystemBackend.assert_called_with('/home')
