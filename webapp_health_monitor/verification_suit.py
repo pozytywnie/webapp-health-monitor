@@ -1,6 +1,6 @@
 import collections
 
-from webapp_health_monitor.errors import VerificationError
+from webapp_health_monitor.errors import VerificationFailure
 
 
 class VerificationSuit(object):
@@ -13,7 +13,7 @@ class VerificationSuit(object):
         for verificator in self.verificators:
             try:
                 verificator.run()
-            except VerificationError as e:
+            except VerificationFailure as e:
                 failures.append(VerificatorResultFailure(verificator, e))
             except Exception as e:
                 errors.append(VerificatorResultError(verificator, e))

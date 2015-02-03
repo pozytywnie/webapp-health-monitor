@@ -36,14 +36,14 @@ class RangeVerificatorTest(TestCase):
         verificator._get_value = mock.Mock(return_value=99)
         verificator.value_extractor = mock.Mock()
         verificator.lower_bound = 100
-        self.assertRaises(errors.VerificationError, verificator.run)
+        self.assertRaises(errors.VerificationFailure, verificator.run)
 
     def test_value_over_upper_bound_raises_verification_error(self):
         verificator = RangeVerificator()
         verificator._get_value = mock.Mock(return_value=100)
         verificator.value_extractor = mock.Mock()
         verificator.upper_bound = 99
-        self.assertRaises(errors.VerificationError, verificator.run)
+        self.assertRaises(errors.VerificationFailure, verificator.run)
 
     def test_get_value(self):
         verificator = RangeVerificator()

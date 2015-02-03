@@ -49,9 +49,9 @@ class RangeVerificator(Verificator):
     def _check_lower_bound(self, value):
         if self.lower_bound is not None:
             if value < self.lower_bound:
-                raise errors.VerificationError()
+                raise errors.VerificationFailure()
 
     def _check_upper_bound(self, value):
         if self.upper_bound is not None:
             if value > self.upper_bound:
-                raise errors.VerificationError()
+                raise errors.VerificationFailure()

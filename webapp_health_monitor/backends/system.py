@@ -85,7 +85,7 @@ class DiskVolume(object):
         return '{} kB'.format(self._kilobytes)
 
 
-class MountPointNotFound(errors.VerificationError):
+class MountPointNotFound(errors.VerificationFailure):
     def __init__(self, mount_point):
         super(MountPointNotFound, self).__init__(
             'Mount point {}, not found'.format(mount_point))
