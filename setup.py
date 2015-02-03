@@ -8,7 +8,7 @@ setup(
     author_email='tomasz@pozytywnie.pl',
     url='https://github.com/pozytywnie/webapp-health-monitor',
     packages=find_packages(),
-    scripts=[],
+    scripts=['bin/webapp_health_monitor'],
     license='MIT',
     description='',
     long_description=open('README.rst').read(),
