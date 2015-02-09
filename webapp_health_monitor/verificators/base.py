@@ -18,7 +18,6 @@ class Verificator(object):
 
 
 class RangeVerificator(Verificator):
-    value_extractor = None
     upper_bound = None
     lower_bound = None
 
