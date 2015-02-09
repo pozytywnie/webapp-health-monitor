@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import argparse
 import importlib
 import sys
@@ -7,7 +6,7 @@ from webapp_health_monitor.verification_suit import VerificationSuit
 from webapp_health_monitor.verificators import get_verificators
 
 
-if __name__ == '__main__':
+def webapp_health_monitor():
     parser = argparse.ArgumentParser()
     parser.add_argument('module', type=str)
     args = parser.parse_args()
