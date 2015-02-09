@@ -26,19 +26,28 @@ class RangeVerificator(Verificator):
         range_checker.check(self.get_value())
 
     def _validate_range(self):
-        if self.lower_bound is None:
-            if self.upper_bound is None:
+        lower_bound = self.get_lower_bound()
+        upper_bound = self.get_upper_bound()
+
+        if lower_bound is None:
+            if upper_bound is None:
                 raise errors.BadConfigurationError()
             else:
-                return UpperBoundChecker(self.upper_bound)
+                return UpperBoundChecker(upper_bound)
         else:
-            if self.upper_bound is None:
-                return LowerBoundChecker(self.lower_bound)
+            if upper_bound is None:
+                return LowerBoundChecker(lower_bound)
             else:
-                if self.lower_bound < self.upper_bound:
-                    return RangeChecker(self.lower_bound, self.upper_bound)
+                if lower_bound < upper_bound:
+                    return RangeChecker(lower_bound, upper_bound)
                 else:
                     raise errors.BadConfigurationError()
+
+    def get_lower_bound(self):
+        return self.lower_bound
+
+    def get_upper_bound(self):
+        return self.upper_bound
 
     def get_value(self):
         raise NotImplementedError
