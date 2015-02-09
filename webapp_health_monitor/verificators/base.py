@@ -18,40 +18,77 @@ class Verificator(object):
 
 
 class RangeVerificator(Verificator):
-    value_extractor = None
     upper_bound = None
     lower_bound = None
 
     def run(self):
-        self._check_configuration()
-        self._check_value()
+        range_checker = self._validate_range()
+        range_checker.check(self.get_value())
 
-    def _check_configuration(self):
-        if not self._are_bounds_configured():
-            raise errors.BadConfigurationError()
+    def _validate_range(self):
+        lower_bound = self.get_lower_bound()
+        upper_bound = self.get_upper_bound()
 
-    def _are_bounds_configured(self):
-        if self.lower_bound is None:
-            return self.upper_bound is not None
-        elif self.upper_bound is not None:
-            return self.lower_bound <= self.upper_bound
+        if lower_bound is None:
+            if upper_bound is None:
+                raise errors.BadConfigurationError(
+                    "Range verification require at least one bound set")
+            else:
+                return UpperBoundChecker(upper_bound)
         else:
-            return True
+            if upper_bound is None:
+                return LowerBoundChecker(lower_bound)
+            else:
+                if lower_bound < upper_bound:
+                    return RangeChecker(lower_bound, upper_bound)
+                else:
+                    raise errors.BadConfigurationError(
+                        "Lower bound must be less then upper bound")
 
-    def _check_value(self):
-        value = self.get_value()
-        self._check_lower_bound(value)
-        self._check_upper_bound(value)
+    def get_lower_bound(self):
+        return self.lower_bound
+
+    def get_upper_bound(self):
+        return self.upper_bound
 
     def get_value(self):
         raise NotImplementedError
 
-    def _check_lower_bound(self, value):
-        if self.lower_bound is not None:
-            if value < self.lower_bound:
-                raise errors.VerificationFailure()
 
-    def _check_upper_bound(self, value):
-        if self.upper_bound is not None:
-            if value > self.upper_bound:
-                raise errors.VerificationFailure()
+class RangeCheckerBase:
+    def check(self, value):
+        raise NotImplementedError
+
+
+class RangeChecker(RangeCheckerBase):
+    def __init__(self, lower_bound, upper_bound):
+        self.lower_bound = lower_bound
+        self.upper_bound = upper_bound
+
+    def check(self, value):
+        if self.lower_bound <= value <= self.upper_bound:
+            return
+        else:
+            raise errors.VerificationFailure()
+
+
+class LowerBoundChecker(RangeCheckerBase):
+    def __init__(self, bound):
+        self.bound = bound
+
+    def check(self, value):
+        if self.bound <= value:
+            return
+        else:
+            raise errors.VerificationFailure()
+
+
+class UpperBoundChecker(RangeCheckerBase):
+    def __init__(self, bound):
+        self.bound = bound
+
+    def check(self, value):
+        if value <= self.bound:
+            return
+        else:
+            raise errors.VerificationFailure()
