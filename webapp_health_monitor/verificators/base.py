@@ -31,7 +31,8 @@ class RangeVerificator(Verificator):
 
         if lower_bound is None:
             if upper_bound is None:
-                raise errors.BadConfigurationError()
+                raise errors.BadConfigurationError(
+                    "Range verification require at least one bound set")
             else:
                 return UpperBoundChecker(upper_bound)
         else:
@@ -41,7 +42,8 @@ class RangeVerificator(Verificator):
                 if lower_bound < upper_bound:
                     return RangeChecker(lower_bound, upper_bound)
                 else:
-                    raise errors.BadConfigurationError()
+                    raise errors.BadConfigurationError(
+                        "Lower bound must be less then upper bound")
 
     def get_lower_bound(self):
         return self.lower_bound
