@@ -26,7 +26,7 @@ class VerificationSuitResult(object):
         self.errors = errors
 
     def report(self):
-        if self._has_failed():
+        if self.has_failed():
             message = 'Failure\n'
             if self.errors:
                 message += 'Errors\n' + '\n'.join(map(str, self.errors))
@@ -36,8 +36,8 @@ class VerificationSuitResult(object):
         else:
             return 'Success\n'
 
-    def _has_failed(self):
-        return self.errors or self.failures
+    def has_failed(self):
+        return bool(self.errors or self.failures)
 
 
 class VerificatorResultError(collections.namedtuple(
