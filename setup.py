@@ -8,10 +8,15 @@ setup(
     author_email='tomasz@pozytywnie.pl',
     url='https://github.com/pozytywnie/webapp-health-monitor',
     packages=find_packages(),
-    scripts=['bin/webapp_health_monitor'],
     license='MIT',
     description='',
     long_description=open('README.rst').read(),
     install_requires=[],
     test_suite='tests',
+    entry_points={
+        'console_scripts': [
+            'webapp_health_monitor='
+            'webapp_health_monitor.scripts:webapp_health_monitor',
+        ]
+    }
 )

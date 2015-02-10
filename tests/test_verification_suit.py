@@ -40,14 +40,14 @@ class VerificationSuitTest(TestCase):
 class VerificationSuitResultTest(TestCase):
     def test_has_failed_ok(self):
         verification_suit = VerificationSuitResult(errors=[], failures=[])
-        self.assertFalse(verification_suit._has_failed())
+        self.assertFalse(verification_suit.has_failed())
 
     def test_has_failed_error(self):
         verification_suit = VerificationSuitResult(
             errors=[VerificationFailure()], failures=[])
-        self.assertTrue(verification_suit._has_failed())
+        self.assertTrue(verification_suit.has_failed())
 
     def test_has_failed_fail(self):
         verification_suit = VerificationSuitResult(
             errors=[], failures=[Exception])
-        self.assertTrue(verification_suit._has_failed())
+        self.assertTrue(verification_suit.has_failed())
