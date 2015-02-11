@@ -32,15 +32,18 @@ class VerificationSuitResult(object):
         report_lines = []
         for result in self.results:
             report_lines.append(str(result))
+        failures = list(self.failures)
+        if failures:
+            report_lines.append('')
+            report_lines.append('Failures')
+            for result in failures:
+                report_lines.extend(result.long_description)
         errors = list(self.errors)
         if errors:
             report_lines.append('')
             report_lines.append('Errors')
             for result in errors:
-                report_lines.append(str(result.verificator))
-                stack_trace = traceback.format_exception(
-                    result.type, result.value, result.traceback)
-                report_lines.append(''.join(stack_trace))
+                report_lines.extend(result.long_description)
         return '\n'.join(report_lines)
 
     def has_failed(self):
@@ -77,6 +80,14 @@ class VerificatorResultError(object):
     def __str__(self):
         return '{}: ERROR'.format(self.verificator)
 
+    @property
+    def long_description(self):
+        stacktrace = traceback.format_exception(
+            self.type, self.value, self.traceback)
+        cleared_stacktrace = [''.join(line.rsplit('\n', 1))
+                              for line in stacktrace]
+        return [str(self.verificator)] + cleared_stacktrace
+
 
 class VerificatorResultFailure(object):
     def __init__(self, verificator, failure):
@@ -84,11 +95,14 @@ class VerificatorResultFailure(object):
         self.failure = failure
 
     def __str__(self):
+        return '{}: FAILURE'.format(self.verificator)
+
+    @property
+    def long_description(self):
         value_description = self.verificator.value_description
         if value_description:
-            return '{}: FAILURE {} {}'.format(
-                self.verificator, value_description, self.failure)
+            return ['{}: {} {}'.format(
+                self.verificator, value_description, self.failure)]
         else:
-            return '{}: FAILURE Value {}'.format(
-                self.verificator, self.failure)
-
+            return ['{}: Value {}'.format(
+                self.verificator, self.failure)]
