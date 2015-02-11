@@ -29,9 +29,11 @@ class VerificationSuitResult(object):
         if self.has_failed():
             message = 'Failure\n'
             if self.errors:
-                message += 'Errors\n' + '\n'.join(map(str, self.errors))
+                message += 'Errors\n{}\n'.format(
+                    '\n'.join(map(str, self.errors)))
             if self.failures:
-                message += 'Failures\n' + '\n'.join(map(str, self.failures))
+                message += 'Failures\n{}\n'.format(
+                    '\n'.join(map(str, self.failures)))
             return message
         else:
             return 'Success\n'
