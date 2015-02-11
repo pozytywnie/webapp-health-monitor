@@ -3,7 +3,6 @@ import importlib
 import sys
 
 from webapp_health_monitor.verification_suit import VerificationSuit
-from webapp_health_monitor.verificators import get_verificators
 
 
 def webapp_health_monitor():
@@ -20,6 +19,6 @@ def _webapp_health_monitor(argv):
     except ImportError:
         return 1
     else:
-        result = VerificationSuit(get_verificators()).run()
+        result = VerificationSuit().run()
         print(result.report())
         return int(result.has_failed())
