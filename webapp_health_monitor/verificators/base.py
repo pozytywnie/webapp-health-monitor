@@ -2,7 +2,7 @@ from webapp_health_monitor import errors
 
 
 class Verificator(object):
-    verificator_name = None
+    value_description = None
 
     def __init__(self, **kwargs):
         pass
@@ -11,10 +11,7 @@ class Verificator(object):
         raise NotImplementedError()
 
     def __str__(self):
-        if self.verificator_name:
-            return self.verificator_name
-        else:
-            return self.__class__.__name__
+        return '{}.{}'.format(self.__module__, self.__class__.__name__)
 
 
 class RangeVerificator(Verificator):
@@ -66,10 +63,12 @@ class RangeChecker(RangeCheckerBase):
         self.upper_bound = upper_bound
 
     def check(self, value):
-        if self.lower_bound <= value <= self.upper_bound:
-            return
-        else:
-            raise errors.VerificationFailure()
+        if value < self.lower_bound:
+            raise errors.VerificationFailure(
+                'is below {}'.format(self.lower_bound))
+        elif value > self.upper_bound:
+            raise errors.VerificationFailure(
+                'is over {}'.format(self.upper_bound))
 
 
 class LowerBoundChecker(RangeCheckerBase):
@@ -77,10 +76,9 @@ class LowerBoundChecker(RangeCheckerBase):
         self.bound = bound
 
     def check(self, value):
-        if self.bound <= value:
-            return
-        else:
-            raise errors.VerificationFailure()
+        if value < self.bound:
+            raise errors.VerificationFailure(
+                'is below {}'.format(self.bound))
 
 
 class UpperBoundChecker(RangeCheckerBase):
@@ -88,7 +86,6 @@ class UpperBoundChecker(RangeCheckerBase):
         self.bound = bound
 
     def check(self, value):
-        if value <= self.bound:
-            return
-        else:
-            raise errors.VerificationFailure()
+        if value > self.bound:
+            raise errors.VerificationFailure(
+                'is over {}'.format(self.bound))

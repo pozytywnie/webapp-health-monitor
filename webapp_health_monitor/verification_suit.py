@@ -49,4 +49,10 @@ class VerificatorResultError(collections.namedtuple(
 class VerificatorResultFailure(collections.namedtuple(
         'VerificatorResultFailureBase', ('verificator', 'failure'))):
     def __str__(self):
-        return '{}: {}'.format(self.verificator, self.failure)
+        value_description = self.verificator.value_description
+        if value_description:
+            return '{}: {} {}'.format(
+                self.verificator, value_description, self.failure)
+        else:
+            return '{}: Value {}'.format(self.verificator, self.failure)
+

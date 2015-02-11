@@ -82,7 +82,12 @@ class DiskVolume(object):
         return self._kilobytes == other._kilobytes
 
     def __str__(self):
-        return '{} kB'.format(self._kilobytes)
+        if self._kilobytes < 1024:
+            return '{} kB'.format(self._kilobytes)
+        elif self._kilobytes < 1024 * 1024:
+            return '{} MB'.format(self._kilobytes / 1024)
+        else:
+            return '{} GB'.format(self._kilobytes / 1024 / 1024)
 
 
 class MountPointNotFound(errors.VerificationFailure):
