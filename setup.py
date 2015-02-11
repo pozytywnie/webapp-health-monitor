@@ -18,5 +18,6 @@ setup(
             'webapp_health_monitor='
             'webapp_health_monitor.scripts:webapp_health_monitor',
         ]
-    }
+    },
+    zip_safe=False,
 )
