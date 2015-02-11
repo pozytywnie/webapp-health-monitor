@@ -1,4 +1,3 @@
-import collections
 import traceback
 import sys
 
@@ -68,15 +67,22 @@ class VerificatorResultSuccess(object):
         return '{}: OK'.format(self.verificator)
 
 
-class VerificatorResultError(collections.namedtuple(
-        'VerificatorResultErrorBase', (
-            'verificator', 'type', 'value', 'traceback'))):
+class VerificatorResultError(object):
+    def __init__(self, verificator, type_, value, traceback_):
+        self.verificator = verificator
+        self.type = type_
+        self.value = value
+        self.traceback = traceback_
+
     def __str__(self):
         return '{}: ERROR'.format(self.verificator)
 
 
-class VerificatorResultFailure(collections.namedtuple(
-        'VerificatorResultFailureBase', ('verificator', 'failure'))):
+class VerificatorResultFailure(object):
+    def __init__(self, verificator, failure):
+        self.verificator = verificator
+        self.failure = failure
+
     def __str__(self):
         value_description = self.verificator.value_description
         if value_description:
