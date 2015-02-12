@@ -1,16 +1,15 @@
 import traceback
 import sys
+from webapp_health_monitor.actions import get_actions
 
 from webapp_health_monitor.errors import VerificationFailure
+from webapp_health_monitor.verificators import get_verificators
 
 
 class VerificationSuit(object):
-    def __init__(self,  verificators):
-        self.verificators = verificators
-
     def run(self):
         results = []
-        for verificator in self.verificators:
+        for verificator in get_verificators():
             try:
                 verificator.run()
             except VerificationFailure as e:
@@ -21,7 +20,11 @@ class VerificationSuit(object):
                     verificator, type, value, traceback))
             else:
                 results.append(VerificatorResultSuccess(verificator))
-        return VerificationSuitResult(results)
+        verification_result = VerificationSuitResult(results)
+        if verification_result.has_failed():
+            for action in get_actions():
+                action.run(verification_result)
+        return verification_result
 
 
 class VerificationSuitResult(object):

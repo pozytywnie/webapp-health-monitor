@@ -4,7 +4,6 @@ from django.apps import apps
 from django.core.management.base import BaseCommand
 
 from webapp_health_monitor.verification_suit import VerificationSuit
-from webapp_health_monitor.verificators import get_verificators
 
 
 class Command(BaseCommand):
@@ -17,7 +16,7 @@ class Command(BaseCommand):
                 importlib.import_module(submodule)
             except ImportError:
                 pass
-        result = VerificationSuit(get_verificators()).run()
+        result = VerificationSuit().run()
         print(result.report())
 
     def _get_verificator_modules(self):
