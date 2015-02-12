@@ -17,10 +17,10 @@ class WebbappHealthMonitorTest(TestCase):
     @mock.patch('sys.stdout')
     @mock.patch('webapp_health_monitor.scripts.importlib.import_module')
     def test_import(self, import_module, stdout):
-        import_module.side_effect = ImportError
-        result = _webapp_health_monitor(['random_module'])
+        import_module.side_effect = ImportError()
+        self.assertRaises(ImportError,
+                          _webapp_health_monitor, ['random_module'])
         import_module.assert_called_with('random_module')
-        self.assertEqual(1, result)
 
     @mock.patch('webapp_health_monitor.scripts.importlib.import_module')
     def test_success(self, import_module):

@@ -14,8 +14,9 @@ class Command(BaseCommand):
         for submodule in submodules:
             try:
                 importlib.import_module(submodule)
-            except ImportError:
-                pass
+            except ImportError as e:
+                if str(e) != "No module named '{}'".format(submodule):
+                    raise e
         result = VerificationSuit().run()
         print(result.report())
 
