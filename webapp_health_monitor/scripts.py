@@ -14,11 +14,7 @@ def _webapp_health_monitor(argv):
     parser.add_argument('module', type=str)
     args = parser.parse_args(argv)
     sys.path.append('.')
-    try:
-        importlib.import_module(args.module)
-    except ImportError:
-        return 1
-    else:
-        result = VerificationSuit().run()
-        print(result.report())
-        return int(result.has_failed())
+    importlib.import_module(args.module)
+    result = VerificationSuit().run()
+    print(result.report())
+    return int(result.has_failed())
