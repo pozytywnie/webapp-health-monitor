@@ -3,6 +3,7 @@ from webapp_health_monitor.verificators.base import RangeVerificator
 
 
 class FreeDiskSpaceVerificator(RangeVerificator):
+    value_description = 'Free disk space'
     mount_point = '/'
 
     def __init__(self, *args, **kwargs):
@@ -14,6 +15,7 @@ class FreeDiskSpaceVerificator(RangeVerificator):
 
 
 class PercentUsedDiskSpaceVerificator(RangeVerificator):
+    value_description = 'Percent disk used'
     mount_point = '/'
 
     def __init__(self, *args, **kwargs):
