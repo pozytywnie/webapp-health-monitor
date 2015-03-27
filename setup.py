@@ -2,7 +2,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 setup(
-    name='Webapp Health Monitor',
+    name='webapp-health-monitor',
     version='0.1',
     author='Tomasz Wysocki',
     author_email='tomasz@pozytywnie.pl',
