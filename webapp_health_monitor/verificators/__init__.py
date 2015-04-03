@@ -7,4 +7,5 @@ def register(verificator_class):
 
 def get_verificators():
     return [verificator_class()
-            for verificator_class in _registered_verificators_classes]
+            for verificator_class in
+            sorted(_registered_verificators_classes, key=str)]
