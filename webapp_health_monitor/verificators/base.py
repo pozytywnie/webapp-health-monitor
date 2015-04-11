@@ -65,10 +65,10 @@ class RangeChecker(RangeCheckerBase):
     def check(self, value):
         if value < self.lower_bound:
             raise errors.VerificationFailure(
-                'is below {}'.format(self.lower_bound))
+                '({}) is below {}'.format(value, self.lower_bound))
         elif value > self.upper_bound:
             raise errors.VerificationFailure(
-                'is over {}'.format(self.upper_bound))
+                '({}) is over {}'.format(value, self.upper_bound))
 
 
 class LowerBoundChecker(RangeCheckerBase):
@@ -78,7 +78,7 @@ class LowerBoundChecker(RangeCheckerBase):
     def check(self, value):
         if value < self.bound:
             raise errors.VerificationFailure(
-                'is below {}'.format(self.bound))
+                '({}) is below {}'.format(value, self.bound))
 
 
 class UpperBoundChecker(RangeCheckerBase):
@@ -88,4 +88,4 @@ class UpperBoundChecker(RangeCheckerBase):
     def check(self, value):
         if value > self.bound:
             raise errors.VerificationFailure(
-                'is over {}'.format(self.bound))
+                '({}) is over {}'.format(value, self.bound))
