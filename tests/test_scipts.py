@@ -28,5 +28,4 @@ class WebbappHealthMonitorTest(TestCase):
         with mock.patch('sys.stdout') as stdout:
             result = _webapp_health_monitor(['random_module'])
         self.assertEqual(0, result)
-        self.assertEqual([mock.call(''), mock.call('\n')],
-                         stdout.write.mock_calls)
+        self.assertEqual([mock.call('\n')], stdout.write.mock_calls)

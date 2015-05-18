@@ -1,4 +1,5 @@
 import importlib
+import sys
 
 from django.apps import apps
 from django.core.management.base import BaseCommand
@@ -18,7 +19,8 @@ class Command(BaseCommand):
                 if str(e) != "No module named '{}'".format(submodule):
                     raise e
         result = VerificationSuit().run()
-        print(result.report())
+        self.stdout.write('{}\n'.format(result.report()))
+        sys.exit(result.has_failed())
 
     def _get_verificator_modules(self):
         for app in apps.get_app_configs():
