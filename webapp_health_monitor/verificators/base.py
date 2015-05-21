@@ -10,6 +10,9 @@ class Verificator(object):
     def run(self):
         raise NotImplementedError()
 
+    def extra_failure_raport(self):
+        return ''
+
     def __str__(self):
         return '{}.{}'.format(self.__module__, self.__class__.__name__)
 

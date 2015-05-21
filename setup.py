@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='webapp-health-monitor',
-    version='0.1.3',
+    version='0.1.4',
     author='Tomasz Wysocki',
     author_email='tomasz@pozytywnie.pl',
     url='https://github.com/pozytywnie/webapp-health-monitor',

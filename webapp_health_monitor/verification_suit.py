@@ -104,8 +104,12 @@ class VerificatorResultFailure(object):
     def long_description(self):
         value_description = self.verificator.value_description
         if value_description:
-            return ['{}: {} {}'.format(
+            description = ['{}: {} {}'.format(
                 self.verificator, value_description, self.failure)]
         else:
-            return ['{}: Value {}'.format(
+            description = ['{}: Value {}'.format(
                 self.verificator, self.failure)]
+        extra_failure_report = self.verificator.extra_failure_raport()
+        if extra_failure_report:
+            description.append(extra_failure_report)
+        return description
