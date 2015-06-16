@@ -6,26 +6,48 @@ except ImportError:
     import mock
 
 from webapp_health_monitor import errors
-from webapp_health_monitor.verificators import _registered_verificators_classes
 from webapp_health_monitor.verificators.base import RangeVerificator
-from webapp_health_monitor.verificators import get_verificators
-from webapp_health_monitor.verificators import register
+from webapp_health_monitor.verificators_set import VerificatorsSet
 from webapp_health_monitor.verificators.system import FreeDiskSpaceVerificator
 from webapp_health_monitor.verificators.system import (
     PercentUsedDiskSpaceVerificator)
 
 
 class RegisterTest(TestCase):
-    def test_register(self):
+    def test_get_precise_tag(self):
         verificator_class = mock.Mock()
-        register(verificator_class)
-        self.assertIn(verificator_class, _registered_verificators_classes)
-
-    def test_get_verificators(self):
-        verificator_class = mock.Mock()
-        register(verificator_class)
+        verificators_set = VerificatorsSet()
+        verificators_set.register(verificator_class, ['a', 'b', 'c', 'd'])
         self.assertIn(verificator_class.return_value,
-                      get_verificators())
+                      verificators_set.get_verificators(['a']))
+
+    def test_get_different_tag(self):
+        verificator_class = mock.Mock()
+        verificators_set = VerificatorsSet()
+        verificators_set.register(verificator_class, ['b', 'c', 'd'])
+        self.assertNotIn(verificator_class.return_value,
+                         verificators_set.get_verificators(['a']))
+
+    def test_get_without_tag_on_tagged(self):
+        verificator_class = mock.Mock()
+        verificators_set = VerificatorsSet()
+        verificators_set.register(verificator_class, ['a'])
+        self.assertIn(verificator_class.return_value,
+                      verificators_set.get_verificators([]))
+
+    def test_get_without_tag_on_untagged(self):
+        verificator_class = mock.Mock()
+        verificators_set = VerificatorsSet()
+        verificators_set.register(verificator_class)
+        self.assertIn(verificator_class.return_value,
+                      verificators_set.get_verificators([]))
+
+    def test_get_tag_on_untagged(self):
+        verificator_class = mock.Mock()
+        verificators_set = VerificatorsSet()
+        verificators_set.register(verificator_class)
+        self.assertNotIn(verificator_class.return_value,
+                         verificators_set.get_verificators(['a']))
 
 
 class RangeVerificatorTest(TestCase):

@@ -3,13 +3,16 @@ import sys
 from webapp_health_monitor.actions import get_actions
 
 from webapp_health_monitor.errors import VerificationFailure
-from webapp_health_monitor.verificators import get_verificators
+from webapp_health_monitor import verificators_register
 
 
 class VerificationSuit(object):
+    def __init__(self, tags):
+        self.tags = tags
+
     def run(self):
         results = []
-        for verificator in get_verificators():
+        for verificator in verificators_register.get_verificators(self.tags):
             try:
                 verificator.run()
             except VerificationFailure as e:
@@ -32,25 +35,28 @@ class VerificationSuitResult(object):
         self.results = results
 
     def report(self):
-        report_lines = []
-        for result in self.results:
-            report_lines.append(str(result))
-        failures = list(self.failures)
-        if failures:
-            report_lines.append('')
-            report_lines.append('Failures')
-            for result in failures:
-                report_lines.extend(result.long_description)
-        errors = list(self.errors)
-        if errors:
-            report_lines.append('')
-            report_lines.append('Errors')
-            for result in errors:
-                report_lines.extend(result.long_description)
-        return '\n'.join(report_lines)
+        if self.results:
+            report_lines = []
+            for result in self.results:
+                report_lines.append(str(result))
+            failures = list(self.failures)
+            if failures:
+                report_lines.append('')
+                report_lines.append('Failures')
+                for result in failures:
+                    report_lines.extend(result.long_description)
+            errors = list(self.errors)
+            if errors:
+                report_lines.append('')
+                report_lines.append('Errors')
+                for result in errors:
+                    report_lines.extend(result.long_description)
+            return '\n'.join(report_lines)
+        else:
+            return 'No verificators found.\n'
 
     def has_failed(self):
-        return bool(list(self.errors)) or bool(list(self.failures))
+        return bool(list(self.errors)) or bool(list(self.failures)) or not self.results
 
     @property
     def errors(self):
