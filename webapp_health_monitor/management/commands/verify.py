@@ -16,7 +16,7 @@ class Command(BaseCommand):
             try:
                 importlib.import_module(submodule)
             except ImportError as e:
-                if str(e) != "No module named '{}'".format(submodule):
+                if not self._import_error_concerns_verificator(submodule, e):
                     raise e
         result = VerificationSuit().run()
         self.stdout.write('{}\n'.format(result.report()))
@@ -25,3 +25,10 @@ class Command(BaseCommand):
     def _get_verificator_modules(self):
         for app in apps.get_app_configs():
             yield '.'.join([app.module.__name__, self.SUBMODULE_NAME])
+
+    def _import_error_concerns_verificator(self, submodule, error):
+        if sys.version_info >= (3, 0):
+            return str(error) == "No module named '{}'".format(submodule)
+        else:
+            return error.message == "No module named {}".format(
+                self.SUBMODULE_NAME)
