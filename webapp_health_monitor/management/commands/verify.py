@@ -1,3 +1,4 @@
+from optparse import make_option
 import importlib
 import sys
 
@@ -9,8 +10,11 @@ from webapp_health_monitor.verification_suit import VerificationSuit
 
 class Command(BaseCommand):
     SUBMODULE_NAME = 'verificators'
+    option_list = BaseCommand.option_list + (
+        make_option('--tag', type=str, default=[], action='append', dest='tags'),
+    )
 
-    def handle(self, *args, **options):
+    def handle(self, tags, **kwargs):
         submodules = self._get_verificator_modules()
         for submodule in submodules:
             try:
@@ -18,7 +22,7 @@ class Command(BaseCommand):
             except ImportError as e:
                 if str(e) != "No module named '{}'".format(submodule):
                     raise e
-        result = VerificationSuit().run()
+        result = VerificationSuit(tags).run()
         self.stdout.write('{}\n'.format(result.report()))
         sys.exit(result.has_failed())
 

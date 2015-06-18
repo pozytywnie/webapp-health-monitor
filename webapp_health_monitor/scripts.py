@@ -12,9 +12,10 @@ def webapp_health_monitor():
 def _webapp_health_monitor(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument('module', type=str)
+    parser.add_argument('--tag', type=str, default=[], action='append', dest='tags')
     args = parser.parse_args(argv)
     sys.path.append('.')
     importlib.import_module(args.module)
-    result = VerificationSuit().run()
+    result = VerificationSuit(args.tags).run()
     sys.stdout.write('{}\n'.format(result.report()))
     return int(result.has_failed())

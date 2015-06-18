@@ -15,31 +15,31 @@ from webapp_health_monitor.verification_suit import VerificationSuitResult
 
 
 class VerificationSuitTest(TestCase):
-    @mock.patch('webapp_health_monitor.verification_suit.get_verificators')
+    @mock.patch('webapp_health_monitor.verificators_register.get_verificators')
     def test_success(self, get_verificators):
         verificator = mock.Mock()
         get_verificators.return_value = [verificator]
-        verification_result = VerificationSuit().run()
+        verification_result = VerificationSuit([]).run()
         self.assertEqual([], list(verification_result.errors))
         self.assertEqual([], list(verification_result.failures))
 
-    @mock.patch('webapp_health_monitor.verification_suit.get_verificators')
+    @mock.patch('webapp_health_monitor.verificators_register.get_verificators')
     def test_failure(self, get_verificators):
         verification_error = VerificationFailure()
         verificator = mock.Mock(run=mock.Mock(side_effect=verification_error))
         get_verificators.return_value = [verificator]
-        verification_result = VerificationSuit().run()
+        verification_result = VerificationSuit([]).run()
         failure_report = list(verification_result.failures)[0]
         self.assertEqual(verificator, failure_report.verificator)
         self.assertEqual(verification_error, failure_report.failure)
         self.assertEqual([], list(verification_result.errors))
 
-    @mock.patch('webapp_health_monitor.verification_suit.get_verificators')
+    @mock.patch('webapp_health_monitor.verificators_register.get_verificators')
     def test_error(self, get_verificators):
         error = NotImplementedError('value')
         verificator = mock.Mock(run=mock.Mock(side_effect=error))
         get_verificators.return_value = [verificator]
-        verification_result = VerificationSuit().run()
+        verification_result = VerificationSuit([]).run()
         error_report = list(verification_result.errors)[0]
         self.assertEqual(verificator, error_report.verificator)
         self.assertEqual(NotImplementedError, error_report.type)
