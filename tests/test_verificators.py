@@ -8,9 +8,7 @@ except ImportError:
 from webapp_health_monitor import errors
 from webapp_health_monitor.verificators.base import RangeVerificator
 from webapp_health_monitor.verificators_set import VerificatorsSet
-from webapp_health_monitor.verificators.system import FreeDiskSpaceVerificator
-from webapp_health_monitor.verificators.system import (
-    PercentUsedDiskSpaceVerificator)
+from webapp_health_monitor.verificators import system
 
 
 class RegisterTest(TestCase):
@@ -83,24 +81,44 @@ class RangeVerificatorTest(TestCase):
 
 
 class FreeDiskSpaceVerificatorTest(TestCase):
-    @mock.patch('webapp_health_monitor.verificators.system.'
-                'FileSystemBackend')
-    def test_using_file_system(self, FileSystemBackend):
-        class AppVerificator(FreeDiskSpaceVerificator):
+    @mock.patch('webapp_health_monitor.backends.system.FileSystemMemoryBackend')
+    def test_using_file_system(self, FileSystemMemoryBackend):
+        class AppVerificator(system.FreeDiskSpaceVerificator):
             mount_point = '/home'
         verificator = AppVerificator()
-        FileSystemBackend.return_value.free_space = 100
+        FileSystemMemoryBackend.return_value.free_space = 100
         self.assertEqual(100, verificator.get_value())
-        FileSystemBackend.assert_called_with('/home')
+        FileSystemMemoryBackend.assert_called_with('/home')
 
 
 class PercentUsedDiskSpaceVerificatorTest(TestCase):
-    @mock.patch('webapp_health_monitor.verificators.system.'
-                'FileSystemBackend')
-    def test_using_file_system(self, FileSystemBackend):
-        class AppVerificator(PercentUsedDiskSpaceVerificator):
+    @mock.patch('webapp_health_monitor.backends.system.FileSystemMemoryBackend')
+    def test_using_file_system(self, FileSystemMemoryBackend):
+        class AppVerificator(system.PercentUsedDiskSpaceVerificator):
             mount_point = '/home'
         verificator = AppVerificator()
-        FileSystemBackend.return_value.percent_used = 100
+        FileSystemMemoryBackend.return_value.percent_used = 100
         self.assertEqual(100, verificator.get_value())
-        FileSystemBackend.assert_called_with('/home')
+        FileSystemMemoryBackend.assert_called_with('/home')
+
+
+class FreeINodeVerificatorTest(TestCase):
+    @mock.patch('webapp_health_monitor.backends.system.FileSystemINodeBackend')
+    def test_using_file_system(self, FileSystemINodesBackend):
+        class AppVerificator(system.FreeINodesVerificator):
+            mount_point = '/home'
+        verificator = AppVerificator()
+        FileSystemINodesBackend.return_value.free_inodes = 100
+        self.assertEqual(100, verificator.get_value())
+        FileSystemINodesBackend.assert_called_with('/home')
+
+
+class PercentINodeVerificatorTest(TestCase):
+    @mock.patch('webapp_health_monitor.backends.system.FileSystemINodeBackend')
+    def test_using_file_system(self, FileSystemINodesBackend):
+        class AppVerificator(system.PercentUsedINodesVerificator):
+            mount_point = '/home'
+        verificator = AppVerificator()
+        FileSystemINodesBackend.return_value.percent_used = 100
+        self.assertEqual(100, verificator.get_value())
+        FileSystemINodesBackend.assert_called_with('/home')
