@@ -46,7 +46,7 @@ class FileSystemBackendBase(object):
 
 
 class FileSystemMemoryBackend(FileSystemBackendBase):
-    df_command = 'df'
+    df_command = ['df']
 
     @property
     def free_space(self):
@@ -71,7 +71,7 @@ class FileSystemMemoryBackend(FileSystemBackendBase):
 
 
 class FileSystemINodeBackend(FileSystemBackendBase):
-    df_command = 'df -i'
+    df_command = ['df', '-i']
 
     @property
     def free_inodes(self):

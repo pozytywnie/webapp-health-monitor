@@ -96,13 +96,13 @@ class FileSystemMemoryBackendTest(TestCase):
                 'check_output')
     def test_df_result(self, check_output):
         FileSystemMemoryBackend('/')._get_df_result()
-        check_output.assert_called_with('df')
-        check_output('df').decode.assert_called_with('utf-8')
+        check_output.assert_called_with(['df'])
+        check_output(['df']).decode.assert_called_with('utf-8')
 
     @mock.patch('webapp_health_monitor.backends.system.subprocess.'
                 'check_output')
     def test_encapsulates_df_error(self, check_output):
-        check_output.side_effect = [subprocess.CalledProcessError(1, 'df -i')]
+        check_output.side_effect = [subprocess.CalledProcessError(1, ['df'])]
         self.assertRaises(errors.BackendError,
                           FileSystemMemoryBackend('/')._get_df_result)
 
@@ -139,12 +139,12 @@ class FileSystemINodeBackendTest(TestCase):
                 'check_output')
     def test_df_result(self, check_output):
         FileSystemINodeBackend('/')._get_df_result()
-        check_output.assert_called_with('df -i')
-        check_output('df -i').decode.assert_called_with('utf-8')
+        check_output.assert_called_with(['df', '-i'])
+        check_output(['df', '-i']).decode.assert_called_with('utf-8')
 
     @mock.patch('webapp_health_monitor.backends.system.subprocess.'
                 'check_output')
     def test_encapsulates_df_error(self, check_output):
-        check_output.side_effect = [subprocess.CalledProcessError(1, 'df -i')]
+        check_output.side_effect = [subprocess.CalledProcessError(1, ['df', '-i'])]
         self.assertRaises(errors.BackendError,
                           FileSystemMemoryBackend('/')._get_df_result)
