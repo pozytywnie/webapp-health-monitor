@@ -1,4 +1,3 @@
-from optparse import make_option
 import importlib
 import sys
 
@@ -10,9 +9,8 @@ from webapp_health_monitor.verification_suit import VerificationSuit
 
 class Command(BaseCommand):
     SUBMODULE_NAME = 'verificators'
-    option_list = BaseCommand.option_list + (
-        make_option('--tag', type=str, default=[], action='append', dest='tags'),
-    )
+    def add_arguments(self, parser):
+        parser.add_argument('--tag', type=str, default=[], action='append', dest='tags')
 
     def handle(self, tags, **kwargs):
         submodules = self._get_verificator_modules()
